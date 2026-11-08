@@ -1,0 +1,23 @@
+name: Build APK
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Unzip project
+        run: unzip -q nextplayer-0.20.0-capture.zip
+      - uses: actions/setup-java@v5
+        with:
+          java-version: 17
+          distribution: temurin
+      - name: Build
+        working-directory: nextplayer-0.20.0
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug
+      - uses: actions/upload-artifact@v7
+        with:
+          name: nextplayer-arm64-v8a-debug
+          path: nextplayer-0.20.0/app/build/outputs/apk/debug/app-arm64-v8a-debug.apk
